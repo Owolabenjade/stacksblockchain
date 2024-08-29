@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { addProduct } from '../contract';
+import InputField from './InputField';
 
 const AddProduct = () => {
   const [productId, setProductId] = useState('');
@@ -35,23 +36,20 @@ const AddProduct = () => {
   return (
     <div>
       <h2>Add Product</h2>
-      <input
-        type="text"
-        placeholder="Product ID"
+      <InputField
         value={productId}
         onChange={(e) => setProductId(e.target.value)}
+        placeholder="Product ID"
       />
-      <input
-        type="text"
-        placeholder="Product Name"
+      <InputField
         value={productName}
         onChange={(e) => setProductName(e.target.value)}
+        placeholder="Product Name"
       />
-      <input
-        type="text"
-        placeholder="Status"
+      <InputField
         value={status}
         onChange={(e) => setStatus(e.target.value)}
+        placeholder="Status"
       />
       <button onClick={handleAddProduct} disabled={loading}>
         {loading ? "Adding..." : "Add Product"}
