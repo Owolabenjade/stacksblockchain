@@ -6,14 +6,16 @@
     (total-votes uint)))
 
 (define-public (create-poll (poll-id uint) (options (list 20 (string-ascii 20))))
-  (match (map-get? polls (tuple (poll-id poll-id)))
-    poll-exist (err u1)
-    (ok (map-set polls 
-        (tuple (poll-id poll-id))
-        (tuple
-          (creator tx-sender)
-          (options (map (lambda (option) (tuple (option-name option) (votes u0))) options))
-          (total-votes u0))))
+  (let ((existing-poll (map-get? polls (tuple (poll-id poll-id)))))
+    (if (is-some existing-poll)
+      (err u1)
+      (ok (map-set polls 
+          (tuple (poll-id poll-id))
+          (tuple
+            (creator tx-sender)
+            (options (map (lambda (option) (tuple (option-name option) (votes u0))) options))
+            (total-votes u0))))
+    )
   )
 )
 
