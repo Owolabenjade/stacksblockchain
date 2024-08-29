@@ -1,8 +1,11 @@
-import React from 'react';
+// src/App.js
+
+import React, { Suspense, lazy } from 'react';
 import AddProduct from './components/AddProduct';
 import UpdateStatus from './components/UpdateStatus';
 import ViewProducts from './components/ViewProducts';
-import DeleteProduct from './components/DeleteProduct';
+
+const LazyDeleteProduct = lazy(() => import('./components/DeleteProduct'));
 
 function App() {
   return (
@@ -21,7 +24,9 @@ function App() {
           <ViewProducts />
         </div>
         <div className="col-md-6">
-          <DeleteProduct />
+          <Suspense fallback={<div>Loading...</div>}>
+            <LazyDeleteProduct />
+          </Suspense>
         </div>
       </div>
     </div>
