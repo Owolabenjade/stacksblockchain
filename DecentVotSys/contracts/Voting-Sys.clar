@@ -1,3 +1,10 @@
+;; Define error constants
+(define-constant ERR_POLL_EXISTS u1)
+(define-constant ERR_POLL_NOT_FOUND u2)
+(define-constant ERR_OPTION_NOT_FOUND u3)
+(define-constant ERR_EXCEEDS_MAX_OPTIONS u4)
+(define-constant ERR_OPTION_NAME_TOO_LONG u5)
+
 ;; Define the map to store polls
 (define-map polls
   { poll-id: uint }
@@ -13,15 +20,21 @@
   (let
     ((existing-poll (map-get? polls { poll-id: poll-id })))
     (if (is-some existing-poll)
-      (err u1)
-      (ok (map-insert polls
-        { poll-id: poll-id }
-        {
-          creator: tx-sender,
-          options: (map (lambda (option) { option-name: option, votes: u0 }) options),
-          total-votes: u0
-        }
-      ))
+      (err ERR_POLL_EXISTS)
+      (if (> (len options) 20)
+        (err ERR_EXCEEDS_MAX_OPTIONS)
+        (if (any (lambda (option) (> (len option) 20)) options)
+          (err ERR_OPTION_NAME_TOO_LONG)
+          (ok (map-insert polls
+            { poll-id: poll-id }
+            {
+              creator: tx-sender,
+              options: (map (lambda (option) { option-name: option, votes: u0 }) options),
+              total-votes: u0
+            }
+          ))
+        )
+      )
     )
   )
 )
@@ -46,15 +59,15 @@
             )
           ))
         )
-      (err u3)) ;; Option not found
-    (err u2)) ;; Poll not found
+      (err ERR_OPTION_NOT_FOUND)) ;; Option not found
+    (err ERR_POLL_NOT_FOUND)) ;; Poll not found
 )
 
 ;; Function to get poll results
 (define-read-only (get-results (poll-id uint))
   (match (map-get? polls { poll-id: poll-id })
     poll (ok (get options poll))
-    (err u4)) ;; Poll not found
+    (err ERR_POLL_NOT_FOUND)) ;; Poll not found
 )
 
 ;; Helper function to find an option in the list
