@@ -1,3 +1,5 @@
+// src/components/AddProduct.js
+
 import React, { useState } from 'react';
 import { addProduct } from '../contract';
 
@@ -5,13 +7,28 @@ const AddProduct = () => {
   const [productId, setProductId] = useState('');
   const [productName, setProductName] = useState('');
   const [status, setStatus] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleAddProduct = async () => {
+    // Form validation
+    if (!productId || !productName || !status) {
+      setError("All fields are required.");
+      setSuccess('');
+      return;
+    }
+
+    setLoading(true);
     try {
       const result = await addProduct(productId, productName, status);
-      console.log('Product added:', result);
+      setSuccess("Product added successfully!");
+      setError('');
     } catch (error) {
-      console.error('Error adding product:', error);
+      setError("Error adding product: " + error.message);
+      setSuccess('');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -36,7 +53,11 @@ const AddProduct = () => {
         value={status}
         onChange={(e) => setStatus(e.target.value)}
       />
-      <button onClick={handleAddProduct}>Add Product</button>
+      <button onClick={handleAddProduct} disabled={loading}>
+        {loading ? "Adding..." : "Add Product"}
+      </button>
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+      {success && <div style={{ color: 'green' }}>{success}</div>}
     </div>
   );
 };
