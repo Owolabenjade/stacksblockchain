@@ -6,12 +6,24 @@ import DeleteProduct from './components/DeleteProduct';
 
 function App() {
   return (
-    <div className="App">
-      <h1>Decentralized Supply Chain App</h1>
-      <AddProduct />
-      <UpdateStatus />
-      <ViewProducts />
-      <DeleteProduct />
+    <div className="container my-5">
+      <h1 className="mb-4">Decentralized Supply Chain App</h1>
+      <div className="row">
+        <div className="col-md-6">
+          <AddProduct />
+        </div>
+        <div className="col-md-6">
+          <UpdateStatus />
+        </div>
+      </div>
+      <div className="row mt-4">
+        <div className="col-md-6">
+          <ViewProducts />
+        </div>
+        <div className="col-md-6">
+          <DeleteProduct />
+        </div>
+      </div>
     </div>
   );
 }

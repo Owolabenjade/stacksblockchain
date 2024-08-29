@@ -6,6 +6,7 @@ const InputField = ({ value, onChange, placeholder, type = 'text' }) => (
     value={value}
     onChange={onChange}
     placeholder={placeholder}
+    className="form-control mb-3"
   />
 );
 
