@@ -1,0 +1,1 @@
+npm install @stacks/transactions @stacks/network @stacks/auth
