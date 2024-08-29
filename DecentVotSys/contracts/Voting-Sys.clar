@@ -14,11 +14,10 @@
           (tuple
             (creator tx-sender)
             (options (map (lambda (option) (tuple (option-name option) (votes u0))) options))
-            (total-votes u0))))
-    )
-  )
+            (total-votes u0))))))
 )
 
+;; Rest of the contract remains the same
 (define-public (vote (poll-id uint) (option-name (string-ascii 20)))
   (match (map-get? polls (tuple (poll-id poll-id)))
     poll (match (find-option option-name (get options poll))
