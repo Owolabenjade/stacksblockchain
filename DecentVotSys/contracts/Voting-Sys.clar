@@ -10,16 +10,19 @@
 
 ;; Function to create a new poll
 (define-public (create-poll (poll-id uint) (options (list 20 (string-ascii 20))))
-  (begin
-    (asserts! (is-none (map-get? polls { poll-id: poll-id })) (err u1))
-    (ok (map-insert polls
+  (let
+    ((existing-poll (map-get? polls { poll-id: poll-id })))
+    (if (is-some existing-poll)
+      (err u1)
+      (ok (map-insert polls
         { poll-id: poll-id }
         {
           creator: tx-sender,
           options: (map (lambda (option) { option-name: option, votes: u0 }) options),
           total-votes: u0
         }
-    ))
+      ))
+    )
   )
 )
 
