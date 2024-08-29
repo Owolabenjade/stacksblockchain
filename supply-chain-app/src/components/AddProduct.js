@@ -1,33 +1,27 @@
-// src/components/AddProduct.js
-
 import React, { useState } from 'react';
 import { addProduct } from '../contract';
 import InputField from './InputField';
+import { useProductContext } from '../context/ProductContext';
 
 const AddProduct = () => {
+  const { setProducts, setError, setSuccess, setLoading } = useProductContext();
   const [productId, setProductId] = useState('');
   const [productName, setProductName] = useState('');
   const [status, setStatus] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleAddProduct = async () => {
-    // Form validation
     if (!productId || !productName || !status) {
       setError("All fields are required.");
-      setSuccess('');
       return;
     }
 
     setLoading(true);
     try {
-      const result = await addProduct(productId, productName, status);
-      setSuccess("Product added successfully!");
+      await addProduct(productId, productName, status);
+      setProducts((prev) => [...prev, { id: productId, name: productName, status }]);
       setError('');
     } catch (error) {
       setError("Error adding product: " + error.message);
-      setSuccess('');
     } finally {
       setLoading(false);
     }
@@ -51,11 +45,7 @@ const AddProduct = () => {
         onChange={(e) => setStatus(e.target.value)}
         placeholder="Status"
       />
-      <button onClick={handleAddProduct} disabled={loading}>
-        {loading ? "Adding..." : "Add Product"}
-      </button>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-      {success && <div style={{ color: 'green' }}>{success}</div>}
+      <button onClick={handleAddProduct}>Add Product</button>
     </div>
   );
 };
