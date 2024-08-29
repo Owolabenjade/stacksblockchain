@@ -1,29 +1,27 @@
+// src/components/UpdateStatus.js
+
 import React, { useState } from 'react';
 import { updateProductStatus } from '../contract';
+import InputField from './InputField';
+import { useProductContext } from '../context/ProductContext';
 
 const UpdateStatus = () => {
+  const { setError, setLoading } = useProductContext();
   const [productId, setProductId] = useState('');
   const [newStatus, setNewStatus] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleUpdateStatus = async () => {
-    // Form validation
     if (!productId || !newStatus) {
       setError("Both fields are required.");
-      setSuccess('');
       return;
     }
 
     setLoading(true);
     try {
-      const result = await updateProductStatus(productId, newStatus);
-      setSuccess("Status updated successfully!");
+      await updateProductStatus(productId, newStatus);
       setError('');
     } catch (error) {
       setError("Error updating status: " + error.message);
-      setSuccess('');
     } finally {
       setLoading(false);
     }
@@ -32,23 +30,19 @@ const UpdateStatus = () => {
   return (
     <div>
       <h2>Update Product Status</h2>
-      <input
-        type="text"
-        placeholder="Product ID"
+      <InputField
         value={productId}
         onChange={(e) => setProductId(e.target.value)}
+        placeholder="Product ID"
+        ariaLabel="Product ID"
       />
-      <input
-        type="text"
-        placeholder="New Status"
+      <InputField
         value={newStatus}
         onChange={(e) => setNewStatus(e.target.value)}
+        placeholder="New Status"
+        ariaLabel="New Product Status"
       />
-      <button onClick={handleUpdateStatus} disabled={loading}>
-        {loading ? "Updating..." : "Update Status"}
-      </button>
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-      {success && <div style={{ color: 'green' }}>{success}</div>}
+      <button onClick={handleUpdateStatus}>Update Status</button>
     </div>
   );
 };
